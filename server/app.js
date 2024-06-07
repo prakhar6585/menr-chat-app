@@ -11,10 +11,13 @@ connectDB(process.env.MONGO_URI)
 
 const app = express();
 
+//using middleware here
+app.use(express.json());
+
 
 app.use('/user', userRoute)
 app.get('/', (req, res) => {
-    res.send('This is default page')
+    res.status(200).send('This is default page')
 })
 
 const PORT = process.env.PORT || 3000
