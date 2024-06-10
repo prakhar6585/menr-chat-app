@@ -21,7 +21,11 @@ const sendToken = (res, user, code, message) => {
     ).json({
         success: true,
     })
+}
+
+const emitEvent = (req, event, users, data) => {
+    console.log('Emiting event', event)
 
 }
 
-export { connectDB, sendToken }
+export { connectDB, sendToken, cookieOptions, emitEvent }

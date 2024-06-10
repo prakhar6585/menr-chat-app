@@ -1,5 +1,6 @@
 import express from 'express'
 import userRoute from './routes/userRoute.js'
+import chatsRoute from './routes/chatsRoute.js'
 import { connectDB } from './utils/features.js';
 import dotenv from "dotenv";
 import { errorMiddleware } from './middlewares/error.js';
@@ -19,6 +20,8 @@ app.use(cookieParser());
 
 
 app.use('/user', userRoute)
+app.use('/chat', chatsRoute)
+
 app.get('/', (req, res) => {
     res.status(200).send('This is default page')
 })

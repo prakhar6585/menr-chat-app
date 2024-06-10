@@ -1,7 +1,7 @@
 
 import { compare } from 'bcrypt';
 import { User } from '../models/user.js'
-import { sendToken } from '../utils/features.js';
+import { cookieOptions, sendToken } from '../utils/features.js';
 import { ErrorHandler } from '../utils/utility.js';
 
 // Create a new user and save it to the database and save in cookie.
@@ -39,6 +39,38 @@ const login = async (req, res, next) => {
 
 const getMyProfile = async (req, res) => {
 
+    const user = await User.findById(req.user).select('-password');
+    res.status(200).json({
+        success: true,
+        user,
+    })
 }
 
-export { login, newUser, getMyProfile }
+const logout = (req, res) => {
+    try {
+        return res.status(200).cookie('chat', "", { ...cookieOptions, maxAge: 0 }).json({
+            success: true,
+            message: "Logout Successfully",
+        })
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: "Error in logout"
+        })
+    }
+}
+
+const searchUser = (req, res) => {
+    try {
+        const { name } = req.query;
+
+
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: "name"
+        })
+    }
+}
+
+export { login, newUser, getMyProfile, logout, searchUser }
