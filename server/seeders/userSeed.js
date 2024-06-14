@@ -27,4 +27,12 @@ const createUser = async (numUsers) => {
     }
 }
 
+const createSampleChats = async () => {
+
+}
+
+const createGroupChats = async () => {
+
+}
+
 export { createUser }
