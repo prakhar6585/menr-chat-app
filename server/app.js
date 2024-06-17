@@ -5,6 +5,7 @@ import { connectDB } from './utils/features.js';
 import dotenv from "dotenv";
 import { errorMiddleware } from './middlewares/error.js';
 import cookieParser from 'cookie-parser'
+import adminRoute from './routes/adminRoute.js'
 
 dotenv.config({
     path: './.env'
@@ -21,6 +22,7 @@ app.use(cookieParser());
 
 app.use('/user', userRoute)
 app.use('/chat', chatsRoute)
+app.use('/admin', adminRoute)
 
 app.get('/', (req, res) => {
     res.status(200).send('This is default page')
