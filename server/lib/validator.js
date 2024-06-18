@@ -65,5 +65,8 @@ const acceptRequestValidator = () => {
         body("accept", "Please add accept").notEmpty().withMessage("Please add request").isBoolean().withMessage("Accept must be boolean")
 }
 
+const adminLoginValidator = () => {
+    body("secretKey", "Please Enter Secret Key").notEmpty()
+}
 
-export { addMembersValidator, chatIdValidator, leaveGroupValidator, loginValidator, newGroupChatValidator, registerValidator, removeMemberValidator, sendAttachmentsValidator, validateHandler, renameValidator, sendrequestValidator, acceptRequestValidator };
+export { addMembersValidator, chatIdValidator, leaveGroupValidator, loginValidator, newGroupChatValidator, registerValidator, removeMemberValidator, sendAttachmentsValidator, validateHandler, renameValidator, sendrequestValidator, acceptRequestValidator, adminLoginValidator };
