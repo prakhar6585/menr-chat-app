@@ -4,12 +4,11 @@ import { Message } from '../models/message.js'
 import { ErrorHandler } from "../utils/utility.js";
 import jwt from 'jsonwebtoken';
 import { cookieOptions } from '../utils/features.js'
+import { adminSecretKey } from "../app.js";
 
 const adminLogin = async (req, res) => {
     try {
         const { secretKey } = req.body;
-
-        const adminSecretKey = process.env.ADMIN_SECRET_KEY || 'mernChatApp'
 
         const isMatched = secretKey === adminSecretKey
 
@@ -36,6 +35,17 @@ const adminLogout = async (req, res) => {
     } catch (error) {
 
     }
+}
+
+const getAdminData = async (req, res) => {
+    try {
+        return res.status(200).json({
+            admin: true,
+        })
+    } catch (error) {
+
+    }
+
 }
 
 const allUsers = async (req, res) => {

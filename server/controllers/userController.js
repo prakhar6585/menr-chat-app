@@ -11,6 +11,9 @@ import { getOtherMembers } from '../lib/helper.js';
 // Create a new user and save it to the database and save in cookie.
 const newUser = async (req, res) => {
     const { name, username, password, bio } = req.body;
+    const file = req.file;
+
+    if (!file) return next(new ErrorHandler("Please upload avatar"))
 
     const avatar = {
         public_id: "dajfj",

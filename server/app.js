@@ -6,6 +6,11 @@ import dotenv from "dotenv";
 import { errorMiddleware } from './middlewares/error.js';
 import cookieParser from 'cookie-parser'
 import adminRoute from './routes/adminRoute.js'
+import { Server } from 'socket.io'
+import { createServer } from 'http';
+import { NEW_MESSAGE } from './constants/events.js';
+import { getSockets } from './lib/helper.js';
+import { Message } from './models/message.js';
 
 dotenv.config({
     path: './.env'
@@ -14,6 +19,12 @@ dotenv.config({
 connectDB(process.env.MONGO_URI)
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {});
+
+export const adminSecretKey = process.env.ADMIN_SECRET_KEY || 'asf=fakfhhasfhlfjjjfajf'
+export const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
+export const userSocketId = new Map();
 
 //using middleware here
 app.use(express.json());
@@ -28,10 +39,59 @@ app.get('/', (req, res) => {
     res.status(200).send('This is default page')
 })
 
+io.use((socket, next) => {
+
+})
+
+io.on("connection", (socket) => {
+    const user = {
+        _id: "ajfjf;",
+        name: "dfjdajsdjfdssjf"
+    };
+    userSocketId.set(user._id.toString(), socket.id)
+    console.log("New connection established", socket.id);
+
+    socket.on(NEW_MESSAGE, async ({ chatId, members, messages }) => {
+
+        const messageForRealTime = {
+            content: messages,
+            _id: uuid(),
+            sender: {
+                _id: user._id,
+                name: user.name
+            },
+            chatId,
+            createdAt: new Date().toISOString(),
+        }
+
+        const messageForDB = {
+            content: messages,
+            sender: user._id,
+            chat: chatId,
+        };
+
+        const membersSocket = getSockets(members);
+        io.to(membersSocket).emit(NEW_MESSAGE, {
+            chatId,
+            message: messageForRealTime,
+        })
+        io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
+        try {
+            await Message.create(messageForDB);
+        } catch (error) {
+            console.log(error)
+        }
+    })
+    socket.on("disconnect", () => {
+        console.log("User disconnected")
+        userSocketId.delete(user._id.toString());
+    })
+});
+
 app.use(errorMiddleware)
 
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT, () => {
-    console.log(`server is running on ${PORT}`);
+server.listen(PORT, () => {
+    console.log(`server is running on ${PORT} in ${envMode} Mode`);
 })
