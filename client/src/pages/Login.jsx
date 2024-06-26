@@ -1,3 +1,5 @@
+import { useFileHandler, useInputValidation, useStrongPassword } from "6pp";
+import { CameraAlt } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -8,16 +10,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CameraAlt } from "@mui/icons-material";
+import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { VisuallyHidden } from "../components/styles/StyledComponents";
-import { useFileHandler, useInputValidation, useStrongPassword } from "6pp";
+import { server } from "../constants/config";
+import { userExists } from "../redux/reducers/auth";
 import { usernameValidator } from "../utils/validators";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   const toggleLogin = () => setIsLogin((prev) => !prev);
+  const dispatch = useDispatch();
 
   const name = useInputValidation("");
   const bio = useInputValidation("");
@@ -25,8 +31,58 @@ const Login = () => {
   const password = useStrongPassword("");
   const avatar = useFileHandler("single");
 
-  const handleSignup = (e) => e.preventDefault();
-  const handleLogin = (e) => e.preventDefault();
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("avatar", avatar.file);
+    formData.append("name", name.value);
+    formData.append("bio", bio.value);
+    formData.append("username", username.value);
+    formData.append("password", password.value);
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/new`,
+        formData,
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || `Something went wrong`);
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || `Something went wrong`);
+    }
+  };
 
   return (
     <div

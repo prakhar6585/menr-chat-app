@@ -23,6 +23,10 @@ const sendToken = (res, user, code, message) => {
     })
 }
 
+const uploadFilesToCloudinary = async (files = []) => {
+
+}
+
 const emitEvent = (req, event, users, data) => {
     console.log('Emiting event', event)
 

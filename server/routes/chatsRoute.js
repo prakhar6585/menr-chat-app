@@ -10,7 +10,7 @@ router.post('/new', isAuthenticated, newGroupChatValidator(), validateHandler, n
 router.get('/my', isAuthenticated, getMyChats);
 router.get('/my/groups', isAuthenticated, getMyGroups);
 router.put('/addmembers', isAuthenticated, addMembersValidator(), validateHandler, addMembers);
-router.put('/removemember', isAuthenticated, removeMemberValidator(), validateHandler, removeMember);
+router.put('/removemember', isAuthenticated, removeMemberValidator(), validateHandler, removeMembers);
 router.delete('/leave/:id', isAuthenticated, leaveGroupValidator(), validateHandler, leaveGroup);
 
 //send attachments

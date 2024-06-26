@@ -1,7 +1,12 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute";
 import Loader from "./components/layout/Loader";
+import { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { server } from "./constants/config";
+import { useDispatch, useSelector } from "react-redux";
+import { userNotExists } from "./redux/reducers/auth";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -16,10 +21,20 @@ const MessagesManagement = lazy(() =>
   import("./pages/Admin/MessageManegemenet")
 );
 
-let user = true;
-
 const App = () => {
-  return (
+  const { user, loader } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    axios
+      .get(`${server}/api/v1/user/me`)
+      .then((res) => console.log(res))
+      .catch(() => dispatch(userNotExists()));
+  }, [dispatch]);
+
+  return loader ? (
+    <Loader />
+  ) : (
     <BrowserRouter>
       <Suspense fallback={<Loader />}>
         <Routes>
@@ -45,6 +60,7 @@ const App = () => {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center" />
     </BrowserRouter>
   );
 };

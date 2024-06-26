@@ -98,7 +98,7 @@ const searchUser = async (req, res) => {
     }
 }
 
-const sendFriendRequest = async () => {
+const sendFriendRequest = async (req, res, next) => {
     try {
         const { userId } = req.body;
 
@@ -129,7 +129,7 @@ const sendFriendRequest = async () => {
     }
 }
 
-const acceptFriendRequest = async () => {
+const acceptFriendRequest = async (req, res, next) => {
     try {
         const { requestId, accept } = req.body;
 
@@ -173,7 +173,7 @@ const acceptFriendRequest = async () => {
     }
 }
 
-const getNotifications = async () => {
+const getNotifications = async (req, res, next) => {
     try {
         const request = await Request.find({ receiver: req.user }).populate("sender", "name avatar");
 
@@ -193,7 +193,7 @@ const getNotifications = async () => {
     }
 }
 
-const getMyFriends = async () => {
+const getMyFriends = async (req, res, next) => {
     try {
         const { chatId } = req.query.chatId;
 

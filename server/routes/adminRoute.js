@@ -5,13 +5,13 @@ import { isAdmin } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.post('/verify', adminLoginValidator(), validateHandler, adminLogin);
+router.post('/verify', adminLoginValidator, validateHandler, adminLogin);
 
 router.get('/logout')
 
 // only admin can access these routes
 
-app.use(isAdmin)
+router.use(isAdmin)
 
 router.get('/');
 
